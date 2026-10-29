@@ -37,7 +37,11 @@ body {
     color: #8b0000;
     overflow-x: hidden;
     position: relative;
-    zoom: 0.67;
+}
+
+.main-content {
+    transform: scale(0.67);
+    transform-origin: top center;
 }
 
 body::before {
