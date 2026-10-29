@@ -1930,9 +1930,8 @@ canvas.addEventListener('mousedown', (e) => {
     if (anyBallMoving() || isPaused) return;
 
     const rect = canvas.getBoundingClientRect();
-    const scale = 0.67;
-    const x = (e.clientX - rect.left) / scale;
-    const y = (e.clientY - rect.top) / scale;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
     const dx = x - cueBall.x;
     const dy = y - cueBall.y;
@@ -1950,10 +1949,9 @@ document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
 
     const rect = canvas.getBoundingClientRect();
-    const scale = 0.67;
     dragEnd = {
-        x: (e.clientX - rect.left) / scale,
-        y: (e.clientY - rect.top) / scale
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
     };
     
     // Обновляем индикатор силы в реальном времени
