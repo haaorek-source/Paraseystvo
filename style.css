@@ -41,6 +41,19 @@ body {
     transform-origin: top center;
 }
 
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ctext x='10' y='30' font-size='20' fill='%238b0000' opacity='0.08'%3E🎃%3C/text%3E%3Ctext x='35' y='50' font-size='18' fill='%238b0000' opacity='0.08'%3E🦇%3C/text%3E%3Ctext x='5' y='55' font-size='16' fill='%238b0000' opacity='0.06'%3E💀%3C/text%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    z-index: -1;
+    pointer-events: none;
+}
+
 /* Папский медведь слева */
 .pope-bear-left {
     position: absolute;
