@@ -37,7 +37,6 @@ body {
     color: #8b0000;
     overflow-x: hidden;
     position: relative;
-    zoom: 0.67;
 }
 
 body::before {
