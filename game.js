@@ -2034,7 +2034,16 @@ function createHalloweenBackground() {
         }
     }
 
-    // Убрали рандомные капли крови - теперь кровь только в местах действий
+    // Добавляем реалистичные капли крови сверху
+    for (let i = 0; i < 8; i++) {
+        const drip = document.createElement('div');
+        drip.className = 'blood-drip';
+        drip.style.left = Math.random() * 100 + '%';
+        drip.style.top = '0';
+        drip.style.animationDelay = Math.random() * 5 + 's';
+        drip.style.animationDuration = (4 + Math.random() * 3) + 's';
+        bg.appendChild(drip);
+    }
 }
 
 // Запуск
