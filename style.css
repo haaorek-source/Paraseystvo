@@ -669,6 +669,8 @@ button:hover {
     align-items: center;
     z-index: 9999;
     animation: overlayBlood 0.2s ease infinite;
+    transform: scale(1.5);
+    transform-origin: center center;
 }
 
 .scream-image {
