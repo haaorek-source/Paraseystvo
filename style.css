@@ -37,7 +37,6 @@ body {
     color: #8b0000;
     overflow-x: hidden;
     position: relative;
-    zoom: 0.67;
 }
 
 body::before {
@@ -667,8 +666,6 @@ button:hover {
     align-items: center;
     z-index: 9999;
     animation: overlayBlood 0.2s ease infinite;
-    transform: scale(1.49);
-    transform-origin: center center;
 }
 
 .scream-image {
