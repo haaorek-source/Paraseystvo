@@ -282,8 +282,6 @@ h1 {
     background: #1a3a20;
     position: relative;
     z-index: 1;
-    max-width: 100%;
-    height: auto;
 }
 
 .controls {
