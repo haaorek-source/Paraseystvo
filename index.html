@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бильярд Парасея</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <audio id="ambientSound" loop>
+        <source src="horror_ambient.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="sawSound">
+        <source src="circular_saw_new.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="screamSound">
+        <source src="horror_scream.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="laughSound">
+        <source src="creepy_laugh.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="monsterSound">
+        <source src="monster_voice.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="bellSound">
+        <source src="bell.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="sirenSound">
+        <source src="siren.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="zombieSound">
+        <source src="zombie.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="halloween-bg" id="halloweenBg"></div>
+
+    <div class="pope-bear-left">
+        <img src="pope_bear.png" alt="Pope Bear">
+    </div>
+
+    <div class="pope-bear-right">
+        <img src="pope_bear.png" alt="Pope Bear">
+    </div>
+
+    <h1>💀 Бассейн с 8 шарами Парасея 💀</h1>
+    <div class="parasey-mascot">
+        <img src="parasey.png" alt="Парасей" class="mascot-image"/>
+    </div>
+    <div class="mascot-name">🐷 Парасей</div>
+    
+    <div class="game-container">
+        <canvas id="poolCanvas" width="1200" height="450"></canvas>
+        <canvas id="bloodCanvas" class="blood-canvas" width="1200" height="450"></canvas>
+        
+        <div class="power-meter">
+            <span>Сила удара:</span>
+            <div class="power-bar">
+                <div class="power-fill" id="powerFill"></div>
+            </div>
+            <span class="power-value" id="powerValue">0%</span>
+        </div>
+        
+        <div class="score">
+            <span>Забито шаров: </span>
+            <span class="score-value" id="score">0</span>
+            <span style="margin-left: 20px;">Уровень: </span>
+            <span class="score-value" id="level">1</span>
+            <span style="margin-left: 20px;">💰 Золото: </span>
+            <span class="score-value" id="gold">0</span>
+            <span style="margin-left: 20px;">❤️ Жизни: </span>
+            <span class="score-value" id="lives">3</span>
+        </div>
+        
+        <div class="controls">
+            <button onclick="resetGame()">🔄 Новая игра</button>
+            <button onclick="togglePause()">⏸️ Пауза</button>
+            <button onclick="openShop()">🏪 Магазин</button>
+        </div>
+    </div>
+    
+    <div class="shop-overlay" id="shopOverlay" style="display: none;">
+        <div class="shop-content">
+            <h2>🏪 Магазин Парасея</h2>
+            <div class="shop-gold">💰 Золото: <span id="shopGold">0</span></div>
+            <div class="shop-items" id="shopItems"></div>
+            <button onclick="closeShop()">Закрыть</button>
+        </div>
+    </div>
+    
+    <div class="parasey-comment" id="paraseyComment">
+        � Тьма: "Тёмные силы ждут..."
+    </div>
+    
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-value" id="totalShots">0</div>
+            <div class="stat-label">Всего ударов</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="perfectShots">0</div>
+            <div class="stat-label">Мощных ударов</div>
+        </div>
+    </div>
+    
+    <div class="achievements">
+        <div class="achievement" id="firstPocket">🎯 Первый шар</div>
+        <div class="achievement" id="combo3">🔥 Комбо x3</div>
+        <div class="achievement" id="combo5">⚡ Комбо x5</div>
+        <div class="achievement" id="cleanSweep">🏆 Чистая победа</div>
+    </div>
+    
+    <div class="highscore">
+        <span>🏆 Рекорд уровня: </span>
+        <span id="highLevel">1</span>
+        <span style="margin-left: 20px;">💰 Всего золота: </span>
+        <span id="totalGold">0</span>
+    </div>
+    
+    <div class="status-effects" id="statusEffects" style="display: none;">
+        <span>🎭 Активные эффекты: </span>
+        <span id="activeEffects"></span>
+    </div>
+    
+    <div class="modifier-display" id="modifierDisplay" style="display: none;">
+        <span>⚡ Модификатор уровня: </span>
+        <span id="currentModifier"></span>
+    </div>
+    
+    <div class="instructions">
+        <h3>🎮 Как играть:</h3>
+        <ul>
+            <li>Кликните на белый шар и тяните назад, чтобы прицелиться</li>
+            <li>Чем дальше тянете, тем сильнее удар</li>
+            <li>Отпустите, чтобы ударить кием</li>
+            <li>Забейте все цветные шары в лузы!</li>
+            <li>🐷 Парасей комментирует твою игру!</li>
+            <li>🏆 Собирай достижения и комбо!</li>
+        </ul>
+    </div>
+
+    <script src="game.js"></script>
+    <script>
+        // Страшный амбиент с плавными переходами
+        const ambientSound = document.getElementById('ambientSound');
+        const sawSound = document.getElementById('sawSound');
+        const screamSound = document.getElementById('screamSound');
+        const laughSound = document.getElementById('laughSound');
+        const monsterSound = document.getElementById('monsterSound');
+        const bellSound = document.getElementById('bellSound');
+        const sirenSound = document.getElementById('sirenSound');
+        const zombieSound = document.getElementById('zombieSound');
+        ambientSound.volume = 0.25;
+        sawSound.volume = 0.15;
+        screamSound.volume = 0.21;
+        laughSound.volume = 0.21;
+        monsterSound.volume = 0.22;
+        bellSound.volume = 0.18;
+        sirenSound.volume = 0.16;
+        zombieSound.volume = 0.17;
+
+        // Список всех звуков
+        const allSounds = [
+            { sound: sawSound, playFn: playRandomSaw },
+            { sound: screamSound, playFn: playRandomScream },
+            { sound: laughSound, playFn: playRandomLaugh },
+            { sound: monsterSound, playFn: playRandomMonster },
+            { sound: bellSound, playFn: playRandomBell },
+            { sound: sirenSound, playFn: playRandomSiren },
+            { sound: zombieSound, playFn: playRandomZombie }
+        ];
+
+        // Глобальный флаг - играет ли какой-то звук
+        let isSoundPlaying = false;
+
+        // Плавный фейд для амбиента
+        function fadeInAmbient() {
+            ambientSound.volume = 0;
+            ambientSound.play().catch(e => console.log('Audio play failed:', e));
+            let vol = 0;
+            const fadeInterval = setInterval(() => {
+                vol += 0.01;
+                if (vol >= 0.25) {
+                    vol = 0.25;
+                    clearInterval(fadeInterval);
+                }
+                ambientSound.volume = vol;
+            }, 100);
+        }
+
+        // Функция выбора случайного звука
+        function playRandomSound() {
+            const randomSound = allSounds[Math.floor(Math.random() * allSounds.length)];
+            randomSound.playFn();
+        }
+
+        // Рандомный circular_saw с fade in/out
+        function playRandomSaw() {
+            isSoundPlaying = true;
+
+            sawSound.currentTime = 0;
+            sawSound.volume = 0;
+            sawSound.play().catch(e => console.log('Saw error:', e));
+
+            // Fade in 1 сек
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += 0.005;
+                if (vol >= 0.15) {
+                    vol = 0.15;
+                    clearInterval(fadeIn);
+                }
+                sawSound.volume = vol;
+            }, 40);
+
+            // Fade out начнём через 2 сек
+            setTimeout(() => {
+                const fadeOut = setInterval(() => {
+                    vol -= 0.00333;
+                    if (vol <= 0) {
+                        vol = 0;
+                        clearInterval(fadeOut);
+                        sawSound.pause();
+                        isSoundPlaying = false;
+                        // После окончания ждём 10-14 секунд тишины и запускаем рандомный звук
+                        const silenceTime = 10000 + Math.random() * 4000;
+                        setTimeout(() => {
+                            playRandomSound();
+                        }, silenceTime);
+                    }
+                    sawSound.volume = vol;
+                }, 33);
+            }, 2000);
+
+            // Fallback если fade out не сработал
+            sawSound.onended = () => {
+                sawSound.onended = null;
+                if (isSoundPlaying) {
+                    sawSound.pause();
+                    isSoundPlaying = false;
+                    const silenceTime = 10000 + Math.random() * 4000;
+                    setTimeout(() => {
+                        playRandomSound();
+                    }, silenceTime);
+                }
+            };
+        }
+
+        // Рандомный крик с fade in/out
+        function playRandomScream() {
+            isSoundPlaying = true;
+
+            screamSound.currentTime = 0;
+            screamSound.volume = 0;
+            screamSound.play().catch(e => console.log('Scream error:', e));
+
+            // Fade in 1.5 сек
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += 0.0035;
+                if (vol >= 0.21) {
+                    vol = 0.21;
+                    clearInterval(fadeIn);
+                }
+                screamSound.volume = vol;
+            }, 65);
+
+            // Fade out 1.5 сек
+            setTimeout(() => {
+                const fadeOut = setInterval(() => {
+                    vol -= 0.0035;
+                    if (vol <= 0) {
+                        vol = 0;
+                        clearInterval(fadeOut);
+                        screamSound.pause();
+                        isSoundPlaying = false;
+                        // После окончания ждём 10-14 секунд тишины и запускаем рандомный звук
+                        const silenceTime = 10000 + Math.random() * 4000;
+                        setTimeout(() => {
+                            playRandomSound();
+                        }, silenceTime);
+                    }
+                    screamSound.volume = vol;
+                }, 65);
+            }, 1500);
+
+            // Fallback если fade out не сработал
+            screamSound.onended = () => {
+                screamSound.onended = null;
+                if (isSoundPlaying) {
+                    screamSound.pause();
+                    isSoundPlaying = false;
+                    const silenceTime = 10000 + Math.random() * 4000;
+                    setTimeout(() => {
+                        playRandomSound();
+                    }, silenceTime);
+                }
+            };
+        }
+
+        // Рандомный смех с fade in/out
+        function playRandomLaugh() {
+            isSoundPlaying = true;
+
+            laughSound.currentTime = 0;
+            laughSound.volume = 0;
+            laughSound.play().catch(e => console.log('Laugh error:', e));
+
+            // Fade in 1 сек
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += 0.00525;
+                if (vol >= 0.21) {
+                    vol = 0.21;
+                    clearInterval(fadeIn);
+                }
+                laughSound.volume = vol;
+            }, 50);
+
+            // Fade out 1 сек
+            setTimeout(() => {
+                const fadeOut = setInterval(() => {
+                    vol -= 0.00525;
+                    if (vol <= 0) {
+                        vol = 0;
+                        clearInterval(fadeOut);
+                        laughSound.pause();
+                        isSoundPlaying = false;
+                        // После окончания ждём 10-14 секунд тишины и запускаем рандомный звук
+                        const silenceTime = 10000 + Math.random() * 4000;
+                        setTimeout(() => {
+                            playRandomSound();
+                        }, silenceTime);
+                    }
+                    laughSound.volume = vol;
+                }, 50);
+            }, 1000);
+
+            // Fallback если fade out не сработал
+            laughSound.onended = () => {
+                laughSound.onended = null;
+                if (isSoundPlaying) {
+                    laughSound.pause();
+                    isSoundPlaying = false;
+                    const silenceTime = 10000 + Math.random() * 4000;
+                    setTimeout(() => {
+                        playRandomSound();
+                    }, silenceTime);
+                }
+            };
+        }
+
+        // Рандомный голос монстра
+        function playRandomMonster() {
+            isSoundPlaying = true;
+
+            monsterSound.currentTime = 0;
+            monsterSound.volume = 0;
+            monsterSound.play().catch(e => console.log('Monster error:', e));
+
+            // Fade in 1 сек
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += 0.011;
+                if (vol >= 0.22) {
+                    vol = 0.22;
+                    clearInterval(fadeIn);
+                }
+                monsterSound.volume = vol;
+            }, 100);
+
+            // Fade out 1 сек
+            setTimeout(() => {
+                const fadeOut = setInterval(() => {
+                    vol -= 0.011;
+                    if (vol <= 0) {
+                        vol = 0;
+                        clearInterval(fadeOut);
+                        monsterSound.pause();
+                        isSoundPlaying = false;
+                        // После окончания ждём 10-14 секунд тишины и запускаем рандомный звук
+                        const silenceTime = 10000 + Math.random() * 4000;
+                        setTimeout(() => {
+                            playRandomSound();
+                        }, silenceTime);
+                    }
+                    monsterSound.volume = vol;
+                }, 100);
+            }, 1000);
+
+            // Fallback если fade out не сработал
+            monsterSound.onended = () => {
+                monsterSound.onended = null;
+                if (isSoundPlaying) {
+                    monsterSound.pause();
+                    isSoundPlaying = false;
+                    const silenceTime = 10000 + Math.random() * 4000;
+                    setTimeout(() => {
+                        playRandomSound();
+                    }, silenceTime);
+                }
+            };
+        }
+
+        // Рандомный колокол
+        function playRandomBell() {
+            isSoundPlaying = true;
+
+            bellSound.currentTime = 0;
+            bellSound.volume = 0;
+            bellSound.play().catch(e => console.log('Bell error:', e));
+
+            // Fade in 2 сек
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += 0.009;
+                if (vol >= 0.18) {
+                    vol = 0.18;
+                    clearInterval(fadeIn);
+                }
+                bellSound.volume = vol;
+            }, 100);
+
+            // Fade out начнём через 3 сек
+            setTimeout(() => {
+                const fadeOut = setInterval(() => {
+                    vol -= 0.006;
+                    if (vol <= 0) {
+                        vol = 0;
+                        clearInterval(fadeOut);
+                        bellSound.pause();
+                        isSoundPlaying = false;
+                        // После окончания ждём 10-14 секунд тишины и запускаем рандомный звук
+                        const silenceTime = 10000 + Math.random() * 4000;
+                        setTimeout(() => {
+                            playRandomSound();
+                        }, silenceTime);
+                    }
+                    bellSound.volume = vol;
+                }, 100);
+            }, 3000);
+
+            // Fallback если fade out не сработал
+            bellSound.onended = () => {
+                bellSound.onended = null;
+                if (isSoundPlaying) {
+                    bellSound.pause();
+                    isSoundPlaying = false;
+                    const silenceTime = 10000 + Math.random() * 4000;
+                    setTimeout(() => {
+                        playRandomSound();
+                    }, silenceTime);
+                }
+            };
+        }
+
+        // Рандомный сирена
+        function playRandomSiren() {
+            isSoundPlaying = true;
+
+            sirenSound.currentTime = 0;
+            sirenSound.volume = 0;
+            sirenSound.play().catch(e => console.log('Siren error:', e));
+
+            // Fade in 2 сек
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += 0.008;
+                if (vol >= 0.16) {
+                    vol = 0.16;
+                    clearInterval(fadeIn);
+                }
+                sirenSound.volume = vol;
+            }, 100);
+
+            // Fade out начнём через 4 сек
+            setTimeout(() => {
+                const fadeOut = setInterval(() => {
+                    vol -= 0.00533;
+                    if (vol <= 0) {
+                        vol = 0;
+                        clearInterval(fadeOut);
+                        sirenSound.pause();
+                        isSoundPlaying = false;
+                        // После окончания ждём 10-14 секунд тишины и запускаем рандомный звук
+                        const silenceTime = 10000 + Math.random() * 4000;
+                        setTimeout(() => {
+                            playRandomSound();
+                        }, silenceTime);
+                    }
+                    sirenSound.volume = vol;
+                }, 100);
+            }, 4000);
+
+            // Fallback если fade out не сработал
+            sirenSound.onended = () => {
+                sirenSound.onended = null;
+                if (isSoundPlaying) {
+                    sirenSound.pause();
+                    isSoundPlaying = false;
+                    const silenceTime = 10000 + Math.random() * 4000;
+                    setTimeout(() => {
+                        playRandomSound();
+                    }, silenceTime);
+                }
+            };
+        }
+
+        // Рандомный зомби
+        function playRandomZombie() {
+            isSoundPlaying = true;
+
+            zombieSound.currentTime = 0;
+            zombieSound.volume = 0.17;
+            zombieSound.play().catch(e => console.log('Zombie error:', e));
+
+            // Ждём окончания файла
+            zombieSound.onended = () => {
+                zombieSound.onended = null;
+                zombieSound.pause();
+                isSoundPlaying = false;
+                // После окончания ждём 10-14 секунд тишины и запускаем рандомный звук
+                const silenceTime = 10000 + Math.random() * 4000;
+                setTimeout(() => {
+                    playRandomSound();
+                }, silenceTime);
+            };
+        }
+
+        // Запуск при первом клике
+        document.addEventListener('click', function initAudio() {
+            fadeInAmbient();
+            // Запускаем только один случайный звук, дальше они будут чередоваться сами
+            setTimeout(() => {
+                playRandomSound();
+            }, 2000);
+            document.removeEventListener('click', initAudio);
+        }, { once: true });
+    </script>
+</body>
+</html>
