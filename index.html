@@ -78,6 +78,12 @@
             <span class="score-value" id="lives">3</span>
         </div>
 
+        <div class="modifier-box" id="modifierBox" style="display: none;">
+            <div class="modifier-header">⚡ Модификатор уровня</div>
+            <div class="modifier-name" id="modifierName"></div>
+            <div class="modifier-desc" id="modifierDesc"></div>
+        </div>
+
         <div class="controls">
             <button onclick="resetGame()">🔄 Новая игра</button>
             <button onclick="togglePause()">⏸️ Пауза</button>
@@ -127,12 +133,7 @@
         <span>🎭 Активные эффекты: </span>
         <span id="activeEffects"></span>
     </div>
-    
-    <div class="modifier-display" id="modifierDisplay" style="display: none;">
-        <span>⚡ Модификатор уровня: </span>
-        <span id="currentModifier"></span>
-    </div>
-    
+
     <div class="instructions">
         <h3>🎮 Как играть:</h3>
         <ul>

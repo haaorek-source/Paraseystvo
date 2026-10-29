@@ -52,6 +52,28 @@ const modifiers = [
     { name: 'Ледяной стол', description: 'Меньше трения', effect: 'iceTable' }
 ];
 
+// Функции модификаторов
+const modifierEffects = {
+    slowBalls: (ball) => {
+        ball.vx *= 0.97;
+        ball.vy *= 0.97;
+    },
+    gravity: (ball) => {
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const dx = centerX - ball.x;
+        const dy = centerY - ball.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 0) {
+            ball.vx += (dx / dist) * 0.02;
+            ball.vy += (dy / dist) * 0.02;
+        }
+    },
+    iceTable: (ball) => {
+        // Меньше трения - применяем в update()
+    }
+};
+
 // Audio Context для звуков
 let audioContext = null;
 
@@ -778,16 +800,17 @@ function initBalls() {
 // Применение модификатора уровня
 function applyLevelModifier() {
     currentModifier = null;
-    document.getElementById('modifierDisplay').style.display = 'none';
-    
+    document.getElementById('modifierBox').style.display = 'none';
+
     if (currentLevel >= 2) {
         const randomModifier = modifiers[Math.floor(Math.random() * modifiers.length)];
         currentModifier = randomModifier;
-        document.getElementById('modifierDisplay').style.display = 'block';
-        document.getElementById('currentModifier').textContent = randomModifier.name;
+        document.getElementById('modifierBox').style.display = 'block';
+        document.getElementById('modifierName').textContent = randomModifier.name;
+        document.getElementById('modifierDesc').textContent = randomModifier.description;
         paraseyComment.textContent = `🐷 Парасей: "Модификатор уровня: ${randomModifier.name}! ${randomModifier.description}"`;
     }
-    
+
     updateStatusEffects();
 }
 
