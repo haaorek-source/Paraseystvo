@@ -40,11 +40,6 @@ body {
     zoom: 0.67;
 }
 
-#poolCanvas, #bloodCanvas {
-    transform: scale(1.49);
-    transform-origin: top left;
-}
-
 body::before {
     content: '';
     position: fixed;
