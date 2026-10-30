@@ -37,6 +37,12 @@ body {
     color: #8b0000;
     overflow-x: hidden;
     position: relative;
+    zoom: 0.67;
+}
+
+#poolCanvas, #bloodCanvas {
+    transform: scale(1.49);
+    transform-origin: top left;
 }
 
 body::before {
