@@ -1067,6 +1067,14 @@ function resetGame() {
     bloodParticles = [];
     updateLevelDisplay();
     initBalls();
+    // Сброс достижений
+    Object.keys(achievements).forEach(key => {
+        achievements[key] = false;
+        const element = document.getElementById(key);
+        if (element) {
+            element.classList.remove('unlocked');
+        }
+    });
 }
 
 // Отрисовка стола
@@ -1998,18 +2006,6 @@ document.addEventListener('mouseup', () => {
 });
 
 // Управление
-function resetGame() {
-    initBalls();
-    // Сброс достижений
-    Object.keys(achievements).forEach(key => {
-        achievements[key] = false;
-        const element = document.getElementById(key);
-        if (element) {
-            element.classList.remove('unlocked');
-        }
-    });
-}
-
 function togglePause() {
     isPaused = !isPaused;
     if (isPaused) {
